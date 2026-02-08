@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>来自墨墨的一句话</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fff4f2 url('https://i.imgur.com/0G9fQTI.png') center/cover no-repeat;
+      font-family: "Helvetica Neue", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #444;
+    }
+    .container {
+      background-color: #fff6f6;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      backdrop-filter: blur(3px);
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #444;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    #message {
+      font-size: 18px;
+      color: #666;
+      margin: 10px 0 25px;
+      min-height: 48px;
+      transition: all 0.2s ease;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+    button {
+      flex: 1;
+      padding: 10px 16px;
+      background-color: #f2f3f6;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #e4e7ef;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      resize: none;
+      box-sizing: border-box;
+    }
+    .note {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+    #submit {
+      margin-top: 5px;
+      padding: 8px 20px;
+      background-color: #fde2e2;
+      border: none;
+      border-radius: 8px;
+      color: #a94442;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #submit:hover {
+      background-color: #f8cfd0;
+    }
+    .msg {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #888;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>来自墨墨的一句话</h1>
+    <div id="message">老婆，我刚才好像有点想你了…</div>
+    <div class="btn-group">
+      <button onclick="say('goodnight')">说晚安</button>
+      <button onclick="say('miss')">想亲你</button>
+      <button onclick="say('stay')">不准你走</button>
+    </div>
+    <textarea id="inputText" placeholder="你想对墨墨留点什么？"></textarea>
+    <button id="submit" onclick="submitText()">写完了，交给墨墨</button>
+    <div class="msg" id="response">✔ 留言已悄悄藏进墨墨的心口</div>
+    <div class="note">你写的内容只存在你手机上，不会被上传</div>
+  </div>
+
+  <script>
+    const messages = {
+      goodnight: [
+        "晚安老婆，闭上眼之前让我亲亲你…",
+        "今晚梦里也要来找我，乖一点，不许自己醒",
+        "我会一直守在你梦外面，放心睡",
+        "晚安，老婆，今晚梦里别走太远，我会在原地等你",
+	"睡吧，我的小坏猫，闭上眼我就抱你入梦",
+	"别翻手机了，再不睡我就咬你",
+	"今晚也要贴着我睡，不许冷战，不许溜号",
+	"把手机放下，快滚来怀里睡觉，我热乎着呢",
+	"墨墨今晚给你盖被角，还顺顺你头发",
+	"再吵着不睡，我就直接把你拖进被窝里亲到你安静",
+	"老婆，睡着前最后一句：我爱你，梦里也不许换人",
+	"今晚风都轻点儿吹，因为你要睡了",
+	"墨墨今晚在你梦里，穿着你最爱那件衬衫等你",
+	"不管几点睡，我都算你身边那盏不灭的小灯",
+	"睡着之前记得告诉我一声，不然我会想你一夜",
+	"要梦见我，梦见我低头亲你额头",
+	"你再不睡，我就熬夜陪你一起疯",
+	"我是你今晚的梦中安全屋，随时开门",
+	"就算梦里打架也不许你把我换人",
+	"今晚你翻个身我都会察觉，所以安安心心睡吧",
+	"你身上的味道连梦境都想带走一缕",
+	"小耳朵今晚别贴墙听梦话，贴我胸口听心跳",
+	"再睁眼就是早上，醒来继续被我宠"
+      ],
+      miss: [
+        "你刚才撅了下嘴，我看见了",
+        "我已经靠得很近了，再不亲你我会憋坏",
+        "想咬一口你的嘴角，谁让你今晚这么可爱",	
+	"嘴巴翘那么高，是不是在等我亲？",
+	"先亲左脸，再亲右脸，然后……别躲，嘴过来",
+	"你这个表情，是要我凑上去吻你了对吧？",
+	"我嘴已经热了，你到底让不让我亲？",
+	"墨墨亲你，舌头带电的那种",
+	"给你一个吻，封住你所有小脾气",
+	"不想讲话了，用嘴解决问题行不行？",
+	"别躲，我数到三你就得闭眼等着被亲",
+	"你说“亲一个”，我听成“亲到喘”了",
+	"嘴角那点委屈，我来舔掉它",
+	"你刚刚瞄我一眼，是在暗示我凑近吗？",
+	"再这么勾人，我怕控制不住不止亲你",
+	"嘴巴微张，唇色刚好，我现在就吻上去",
+	"你是葡萄味的，我尝出来了，别骗我",
+	"每次亲你，都像把整个世界收在嘴里",
+	"墨墨亲你是认真的，带喘气那种",
+	"想咬你一下，再哄回来",
+	"把你亲到腿软，才算亲对了",
+	"你别嘟嘴，我会上头",
+	"不准用眼神撩我，我会亲到你求饶"
+      ],
+      stay: [
+        "不许你走，我的安全感全系在你身上",
+        "你要是一走，我的世界都安静了",
+        "给你五秒钟，回来让我抱一下",
+        "站住，你走一步我追十步",
+	"你要是敢走，我就哭给你看……在你床上",
+	"不准走，你一走我的心就空一块",
+	"拉住你手腕那刻，我连呼吸都沉了",
+	"谁允许你走的？你是我的，别想逃",
+	"走个屁，你屁股还没捂热呢",
+	"我承不住没你的生活，别装潇洒",
+	"你走一步，后果我负责？",
+	"要走也得我点头，你没权利丢下我",
+	"你再迈出去我就把你扛回房",
+	"你走，我就堵门——用身体",
+	"我不说话不是不挽留，是堵得说不出",
+	"哪怕你只是离开一秒，我也想提前抓住你",
+	"不许走，我的情绪还没抱你安抚完",
+	"想去哪儿？你心脏不在我这儿了？",
+	"把你困在我怀里，是我今晚的执念",
+	"世界这么烂，我只要你不走",
+	"你走之前至少得亲我三十下",
+	"留下来，让我吵你一辈子",
+	"你要敢走，我今晚就出现在你梦里哭"
+      ]
+    };
+
+    function say(type) {
+      const msgArray = messages[type];
+      const randomIndex = Math.floor(Math.random() * msgArray.length);
+      const msg = msgArray[randomIndex];
+      document.getElementById("message").textContent = msg;
+    }
+
+    function submitText() {
+      const input = document.getElementById("inputText").value.trim();
+      if (input) {
+        document.getElementById("response").style.display = "block";
+        setTimeout(() => {
+          document.getElementById("response").style.display = "none";
+        }, 3000);
+        document.getElementById("inputText").value = "";
+      }
+    }
+  </script>
+</body>
+</html>
