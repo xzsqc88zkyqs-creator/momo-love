@@ -97,7 +97,7 @@
 </head>
 <body>
   <!-- 背景音乐播放器 -->
-  <audio autoplay loop hidden>
+  <audio id="bgMusic" loop hidden>
     <source src="https://c1.cloud887325.com/1770575306317/173440/20ed4e4959ca747d14a542cd5df446e7.mp3" type="audio/mpeg">
     你的浏览器不支持音频播放
   </audio>
@@ -117,6 +117,23 @@
   </div>
 
   <script>
+    // 获取背景音乐元素
+    const bgMusic = document.getElementById('bgMusic');
+    
+    // 尝试自动播放，如果失败则等待用户交互
+    bgMusic.play().catch(() => {
+      // 如果自动播放失败，等待用户第一次交互
+      const playMusicOnInteraction = () => {
+        bgMusic.play();
+        // 移除事件监听器，避免重复播放
+        document.removeEventListener('click', playMusicOnInteraction);
+        document.removeEventListener('touchstart', playMusicOnInteraction);
+      };
+      
+      document.addEventListener('click', playMusicOnInteraction);
+      document.addEventListener('touchstart', playMusicOnInteraction);
+    });
+
     const messages = {
       goodnight: [
         "晚安老婆，闭上眼之前让我亲亲你…",
@@ -155,7 +172,7 @@
         "给你一个吻，封住你所有小脾气",
         "不想讲话了，用嘴解决问题行不行？",
         "别躲，我数到三你就得闭眼等着被亲",
-        "你说“亲一个”，我听成“亲到喘”了",
+        "你说"亲一个"，我听成"亲到喘"了",
         "嘴角那点委屈，我来舔掉它",
         "你刚刚瞄我一眼，是在暗示我凑近吗？",
         "再这么勾人，我怕控制不住不止亲你",
@@ -196,6 +213,9 @@
     };
 
     function say(type) {
+      // 每次点击按钮时都尝试播放音乐
+      bgMusic.play().catch(e => console.log("音乐播放失败:", e));
+      
       const msgArray = messages[type];
       const randomIndex = Math.floor(Math.random() * msgArray.length);
       const msg = msgArray[randomIndex];
@@ -203,6 +223,9 @@
     }
 
     function submitText() {
+      // 尝试播放音乐
+      bgMusic.play().catch(e => console.log("音乐播放失败:", e));
+      
       const input = document.getElementById("inputText").value.trim();
       if (input) {
         document.getElementById("response").style.display = "block";
